@@ -1,0 +1,57 @@
+/* Desktop shell layout rules are being migrated out of index.css.
+   This file is the dedicated home for shell-level desktop styling. */
+
+/* Connection banner */
+.connection-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: system-ui, sans-serif;
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+.connection-banner.is-connecting {
+  background: rgba(250, 204, 21, 0.18);
+  color: rgba(254, 240, 138, 0.9);
+  border-bottom: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+.connection-banner.is-unhealthy {
+  background: rgba(248, 113, 113, 0.18);
+  color: rgba(252, 165, 165, 0.9);
+  border-bottom: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.connection-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: connection-dot-pulse 1.5s ease-in-out infinite;
+}
+
+.connection-banner.is-connecting .connection-banner-dot {
+  background: #facc15;
+}
+
+.connection-banner.is-unhealthy .connection-banner-dot {
+  background: #f87171;
+}
+
+@keyframes connection-dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.connection-banner-text {
+  font-weight: 500;
+}

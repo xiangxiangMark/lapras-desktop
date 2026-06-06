@@ -1,0 +1,65 @@
+name: Package macOS arm64
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Optional GitHub Release tag to upload the DMG to, for example v1.0.0"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  package-macos:
+    name: Build macOS arm64 DMG
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Generate DMG background
+        run: node scripts/generate-dmg-background.mjs
+
+      - name: Build DMG
+        run: npm run package:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: List artifacts
+        run: ls -lh release
+
+      - name: Verify release asset name
+        run: test -f release/Lapras-1.0.0-arm64.dmg
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lapras-macOS-arm64
+          path: release/Lapras-1.0.0-arm64.dmg
+          if-no-files-found: error
+
+      - name: Upload to GitHub Release
+        if: ${{ inputs.release_tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          gh release view "$RELEASE_TAG" >/dev/null 2>&1 || \
+            gh release create "$RELEASE_TAG" --draft --title "$RELEASE_TAG" \
+              --notes "Lapras ${RELEASE_TAG#v} draft release. Upload both Windows and macOS verified installers before publishing."
+          gh release upload "$RELEASE_TAG" release/*.dmg --clobber

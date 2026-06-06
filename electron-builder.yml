@@ -1,0 +1,94 @@
+appId: com.lapras.music.companion
+productName: Lapras
+copyright: "Copyright (C) 2026 Lapras"
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - "apps/server/dist/**"
+  - "apps/server/package.json"
+  - "apps/web/dist/**"
+  - "apps/desktop/dist/**"
+  - "apps/desktop/package.json"
+  - "build/netease-service.cjs"
+  - "packages/shared/dist/**"
+  - "packages/shared/package.json"
+  - "node_modules/@ai-music-companion/shared/dist/**"
+  - "node_modules/@ai-music-companion/shared/package.json"
+  - "node_modules/**"
+  - "!node_modules/.cache/**"
+  - "!node_modules/.bin/**"
+  - "!node_modules/electron/**"
+  - "!node_modules/electron-builder/**"
+  - "!node_modules/typescript/**"
+  - "!node_modules/vite/**"
+  - "!node_modules/@vitejs/**"
+  - "!node_modules/tailwindcss/**"
+  - "!node_modules/@types/**"
+  - "!node_modules/tsx/**"
+  - "!**/.git/**"
+  - "user/**"
+  - ".env.example"
+  - "package.json"
+
+extraResources:
+  - from: "user"
+    to: "user"
+  - from: ".env.example"
+    to: ".env.example"
+  - from: "build/icon.ico"
+    to: "icon.ico"
+  - from: "build/icon.png"
+    to: "icon.png"
+  - from: "build/tray-icon-32.png"
+    to: "tray-icon-32.png"
+
+asar: true
+
+npmRebuild: true
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.ico
+  artifactName: "Lapras-Setup-${version}.${ext}"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Lapras
+  uninstallDisplayName: Lapras
+  language: "2052"
+  license: build/license.txt
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  include: build/installer.nsh
+
+mac:
+  target:
+    - target: dmg
+      arch: [arm64]
+  icon: build/icon.icns
+  artifactName: "Lapras-${version}-${arch}.${ext}"
+  category: public.app-category.music
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+
+dmg:
+  title: "Lapras ${version}"
+  iconSize: 100
+  background: dmg-background.png
+  window:
+    width: 660
+    height: 420
+  contents:
+    - x: 190
+      y: 280
+    - x: 572
+      y: 280
+      type: link
+      path: /Applications

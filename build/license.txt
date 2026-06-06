@@ -1,0 +1,52 @@
+Lapras Software License Agreement
+=================================
+
+Version 1.0.0 | Copyright (C) 2026 Lapras
+
+
+Terms of Use
+------------
+
+Lapras ("the Software") is an AI-powered desktop music companion.
+By installing, copying, or using the Software, you agree to the terms
+of this agreement.
+
+1. License Grant
+
+   The Software is provided for personal, non-commercial use. You may
+   install and use the Software on one or more personal devices.
+
+2. Disclaimer
+
+   a. The Software is provided "as is", without warranties of any kind,
+      either express or implied.
+   b. Music content remains the property of its original rights holders.
+      The Software only acts as a companion and playback tool.
+   c. AI-generated recommendations are for reference only. The developer
+      is not responsible for the accuracy, suitability, or copyright
+      compliance of recommendation results.
+   d. Third-party services accessed through the Software, including but
+      not limited to DeepSeek API and Netease Cloud Music, are operated
+      by their respective providers.
+
+3. Privacy
+
+   a. Your DeepSeek API key is stored only on your local device.
+   b. Playback history, music preferences, and profile data are stored
+      locally on your device.
+   c. The Software does not intentionally collect or transmit personally
+      identifiable information.
+
+4. Restrictions
+
+   You may not reverse engineer, decompile, disassemble, redistribute,
+   or use the Software for commercial purposes without permission.
+
+5. Termination
+
+   This agreement terminates automatically if you violate its terms.
+   After termination, you must stop using the Software and delete all
+   copies in your possession.
+
+
+For questions or feedback, please contact the project through GitHub.

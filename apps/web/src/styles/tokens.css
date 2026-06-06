@@ -1,0 +1,9 @@
+:root {
+  --lapras-glass-white-04: rgba(255, 255, 255, 0.04);
+  --lapras-glass-white-08: rgba(255, 255, 255, 0.08);
+  --lapras-glass-white-12: rgba(255, 255, 255, 0.12);
+  --lapras-glass-white-18: rgba(255, 255, 255, 0.18);
+  --lapras-glass-white-24: rgba(255, 255, 255, 0.24);
+  --lapras-glass-shadow: 0 20px 48px rgba(15, 23, 42, 0.18);
+  --lapras-glass-border: 1px solid rgba(255, 255, 255, 0.2);
+}

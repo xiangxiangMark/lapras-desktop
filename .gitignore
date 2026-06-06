@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+apps/*/dist/
+packages/*/dist/
+release/
+*.tsbuildinfo
+
+# Local env and data
+.env
+.env.local
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Caches and temporary files
+.npm-cache/
+.cache/
+tmp/
+tmp-*/
+*.log
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

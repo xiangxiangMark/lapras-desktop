@@ -1,0 +1,44 @@
+{
+  "name": "lapras-desktop",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Lapras — AI 音乐伴侣（Electron 桌面版）",
+  "main": "apps/desktop/dist/main.js",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @ai-music-companion/desktop",
+    "dev:server": "npm run dev -w @ai-music-companion/server",
+    "dev:web": "npm run dev -w @ai-music-companion/web -- --host 0.0.0.0",
+    "dev:desktop": "npm run dev -w @ai-music-companion/desktop",
+    "clean": "node scripts/clean.mjs",
+    "build": "npm run build -w @ai-music-companion/shared && npm run build -w @ai-music-companion/server && npm run build -w @ai-music-companion/web && npm run build -w @ai-music-companion/desktop",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "check": "npm run typecheck && npm run build",
+    "desktop": "npm run build && npm run start -w @ai-music-companion/desktop",
+    "package:win": "npm run build && electron-builder --win --x64",
+    "package:mac": "npm run build && electron-builder --mac --arm64",
+    "package": "npm run build && electron-builder --win --mac"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@ai-music-companion/shared": "file:packages/shared",
+    "@fastify/cors": "^10.0.2",
+    "@fastify/websocket": "^11.0.2",
+    "@neteasecloudmusicapienhanced/api": "^4.34.3",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.3",
+    "ws": "^8.18.1",
+    "zod": "^3.24.4"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}
