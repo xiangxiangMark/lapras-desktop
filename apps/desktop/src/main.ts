@@ -737,14 +737,15 @@ function getManagedServiceLogPaths(key: ManagedServiceKey) {
 }
 
 function getNeteaseServiceWrapperPath(): string {
-  const fallbackPath = app.isPackaged
-    ? getRuntimeAssetPath("netease-service.cjs")
-    : path.join(workspaceRoot, "build", "netease-service.cjs");
+  const fallbackPath = path.join(workspaceRoot, "build", "netease-service.cjs");
   const candidates: string[] = app.isPackaged
-    ? [fallbackPath, path.join(app.getAppPath(), "build", "netease-service.cjs")]
+    ? [
+        path.join(app.getAppPath(), "build", "netease-service.cjs"),
+        getRuntimeAssetPath("netease-service.cjs")
+      ]
     : [fallbackPath];
 
-  return candidates.find((candidate) => existsSync(candidate)) ?? fallbackPath;
+  return candidates.find((candidate) => existsSync(candidate)) ?? candidates[0] ?? fallbackPath;
 }
 
 function getBackendLogPaths() {
