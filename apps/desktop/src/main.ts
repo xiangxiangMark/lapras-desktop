@@ -736,8 +736,15 @@ function getManagedServiceLogPaths(key: ManagedServiceKey) {
   return { outPath, errPath };
 }
 
-function getNeteaseServiceWrapperPath() {
-  return path.join(workspaceRoot, "build", "netease-service.cjs");
+function getNeteaseServiceWrapperPath(): string {
+  const fallbackPath = app.isPackaged
+    ? getRuntimeAssetPath("netease-service.cjs")
+    : path.join(workspaceRoot, "build", "netease-service.cjs");
+  const candidates: string[] = app.isPackaged
+    ? [fallbackPath, path.join(app.getAppPath(), "build", "netease-service.cjs")]
+    : [fallbackPath];
+
+  return candidates.find((candidate) => existsSync(candidate)) ?? fallbackPath;
 }
 
 function getBackendLogPaths() {
@@ -909,6 +916,7 @@ async function ensureManagedLocalService(
       ...process.env,
       HOST: listenTarget.host,
       PORT: String(listenTarget.port),
+      LAPRAS_APP_ASAR_PATH: app.isPackaged ? app.getAppPath() : workspaceRoot,
       ...launchSpec.env,
       ...(isPackagedRuntimeBinary(launchSpec.command)
         ? { ELECTRON_RUN_AS_NODE: "1" }

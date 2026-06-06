@@ -41,6 +41,8 @@ extraResources:
     to: "icon.ico"
   - from: "build/icon.png"
     to: "icon.png"
+  - from: "build/netease-service.cjs"
+    to: "netease-service.cjs"
   - from: "build/tray-icon-32.png"
     to: "tray-icon-32.png"
 
