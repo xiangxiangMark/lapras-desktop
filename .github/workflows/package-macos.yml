@@ -36,7 +36,7 @@ jobs:
         run: node scripts/generate-dmg-background.mjs
 
       - name: Build DMG
-        run: npm run package:mac
+        run: npm run package:mac:ci
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
