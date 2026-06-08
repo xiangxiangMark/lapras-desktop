@@ -19,7 +19,7 @@ function isNeteaseServerResolutionError(error) {
   );
 }
 
-function loadNeteaseServer() {
+function loadNeteaseApi() {
   ensureNeteaseTempFiles();
 
   const appAsarCandidates = [
@@ -40,7 +40,10 @@ function loadNeteaseServer() {
   for (const packageJsonPath of packageJsonCandidates) {
     try {
       const scopedRequire = createRequire(packageJsonPath);
-      return scopedRequire("@neteasecloudmusicapienhanced/api/server");
+      return {
+        generateConfig: scopedRequire("@neteasecloudmusicapienhanced/api/generateConfig"),
+        loadServer: () => scopedRequire("@neteasecloudmusicapienhanced/api/server")
+      };
     } catch (error) {
       if (!isNeteaseServerResolutionError(error)) {
         throw error;
@@ -50,7 +53,10 @@ function loadNeteaseServer() {
   }
 
   try {
-    return require("@neteasecloudmusicapienhanced/api/server");
+    return {
+      generateConfig: require("@neteasecloudmusicapienhanced/api/generateConfig"),
+      loadServer: () => require("@neteasecloudmusicapienhanced/api/server")
+    };
   } catch (error) {
     console.error("[Lapras] Failed to load bundled Netease API server.");
     console.error(errors.join("\n"));
@@ -58,11 +64,17 @@ function loadNeteaseServer() {
   }
 }
 
-const { serveNcmApi } = loadNeteaseServer();
+const { generateConfig, loadServer } = loadNeteaseApi();
 
-serveNcmApi({
-  checkVersion: false
-}).catch((error) => {
-  console.error("[Lapras] Netease service failed to start", error);
-  process.exit(1);
-});
+Promise.resolve()
+  .then(() => generateConfig())
+  .then(() => {
+    const { serveNcmApi } = loadServer();
+    return serveNcmApi({
+      checkVersion: false
+    });
+  })
+  .catch((error) => {
+    console.error("[Lapras] Netease service failed to start", error);
+    process.exit(1);
+  });

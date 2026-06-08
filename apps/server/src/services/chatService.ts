@@ -62,7 +62,8 @@ export class ChatService {
             plan.tuning,
             decision.reason,
             "ai",
-            effectiveMode
+            effectiveMode,
+            { playImmediately: true }
           );
           break;
         case "play_track":

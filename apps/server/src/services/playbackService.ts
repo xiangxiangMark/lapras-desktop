@@ -125,7 +125,8 @@ export class PlaybackService {
     tuning: RecommendationTuning | undefined,
     reason: string,
     trigger: "manual" | "ai" | "system" = "ai",
-    mode = this.stateService.getMode()
+    mode = this.stateService.getMode(),
+    options: { playImmediately?: boolean } = {}
   ) {
     const currentSong = this.stateService.getCurrentSong();
     const tracks = await this.buildRecommendedTrackPool({
@@ -142,10 +143,22 @@ export class PlaybackService {
       throw new Error("No tracks found.");
     }
 
-    const [firstTrack, ...rest] = await this.promotePlayableTrack(tracks);
+    const promoted = await this.promotePlayableTrack(tracks);
+    const [firstTrack, ...rest] = promoted.tracks;
 
     if (!firstTrack) {
       throw new Error("No tracks found.");
+    }
+
+    if (options.playImmediately || !currentSong) {
+      if (!promoted.hasPlayableAudio) {
+        throw new Error("No playable tracks found.");
+      }
+      const oldQueue = this.stateService.getQueue();
+      this.stateService.setQueue(
+        this.filterQueueAgainstCurrent([...rest, ...oldQueue], firstTrack).slice(0, 60)
+      );
+      return this.playSong(firstTrack, trigger, reason, mode);
     }
 
     if (currentSong) {
@@ -330,24 +343,33 @@ export class PlaybackService {
   }
 
   private async promotePlayableTrack(tracks: SongDetail[]) {
-    if (tracks.length <= 1) {
-      return tracks;
+    if (tracks.length === 0) {
+      return {
+        tracks,
+        hasPlayableAudio: false
+      };
     }
 
-    for (let index = 0; index < Math.min(5, tracks.length); index += 1) {
+    for (let index = 0; index < Math.min(12, tracks.length); index += 1) {
       const candidate = tracks[index]!;
       const detail = await this.hydrateSongForPlayback(candidate);
 
       if (detail.audioUrl) {
-        return [
-          detail,
-          ...tracks.slice(0, index),
-          ...tracks.slice(index + 1)
-        ];
+        return {
+          tracks: [
+            detail,
+            ...tracks.slice(0, index),
+            ...tracks.slice(index + 1)
+          ],
+          hasPlayableAudio: true
+        };
       }
     }
 
-    return tracks;
+    return {
+      tracks,
+      hasPlayableAudio: false
+    };
   }
 
   private async ensureQueueDepth(mode: AppMode) {
