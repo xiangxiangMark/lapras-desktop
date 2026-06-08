@@ -1,7 +1,27 @@
 const path = require("node:path");
+const fs = require("node:fs");
+const os = require("node:os");
 const { createRequire } = require("node:module");
 
+function ensureNeteaseTempFiles() {
+  const anonymousTokenPath = path.join(os.tmpdir(), "anonymous_token");
+
+  if (!fs.existsSync(anonymousTokenPath)) {
+    fs.writeFileSync(anonymousTokenPath, "", "utf-8");
+  }
+}
+
+function isNeteaseServerResolutionError(error) {
+  return (
+    error &&
+    error.code === "MODULE_NOT_FOUND" &&
+    String(error.message || "").includes("@neteasecloudmusicapienhanced/api/server")
+  );
+}
+
 function loadNeteaseServer() {
+  ensureNeteaseTempFiles();
+
   const appAsarCandidates = [
     process.env.LAPRAS_APP_ASAR_PATH
       ? process.env.LAPRAS_APP_ASAR_PATH
@@ -22,6 +42,9 @@ function loadNeteaseServer() {
       const scopedRequire = createRequire(packageJsonPath);
       return scopedRequire("@neteasecloudmusicapienhanced/api/server");
     } catch (error) {
+      if (!isNeteaseServerResolutionError(error)) {
+        throw error;
+      }
       errors.push(`${packageJsonPath}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
